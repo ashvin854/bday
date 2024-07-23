@@ -1,0 +1,85 @@
+/* Resetting default margins and paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+/* Main container styles */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header styles */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+/* Paragraph styles */
+p {
+    margin-bottom: 15px;
+    color: #666;
+    text-align: justify;
+}
+
+/* Styling the article tag */
+article {
+    background-color: #e9f5ff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Image styles */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 15px auto;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Heading styles */
+h4 {
+    font-size: 18px;
+    color: #333;
+    margin-top: 20px;
+}
+
+/* Footer styles */
+h5 {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+    text-align: right;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+    h1 {
+        font-size: 20px;
+    }
+    h4 {
+        font-size: 16px;
+    }
+}
