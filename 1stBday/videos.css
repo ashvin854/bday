@@ -1,0 +1,63 @@
+/* Resetting default margin and padding */
+body, h5, p, article {
+    margin: 0;
+    padding: 0;
+}
+
+/* Setting a background color and font styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    font-size: 18px; /* Increased font size for body text */
+}
+
+/* Centering the content */
+section {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+/* Styling the videos */
+video {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    outline: none; /* Removing default outline on focus */
+}
+
+/* Styling paragraphs */
+p {
+    font-size: 18px; /* Increased font size for paragraphs */
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Styling the article */
+article {
+    margin-top: 20px;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.8;
+    text-align: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* Adding a bit of style to the h5 */
+h5 {
+    font-size: 16px; /* Adjusted font size for h5 */
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    font-style: italic;
+    margin-bottom: 20px;
+}
