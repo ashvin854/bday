@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.8;
+    background: #f9f0ff;
+    color: #333;
+    height: 125vh;
+    background-size: cover;
+    margin-top: 80px;
+    padding: 30px;
+    position: relative;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.negative {
+    color: #ff4444;
+    font-weight: bold;
+    background-color: rgba(255, 68, 68, 0.1);
+}
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    color: #9c27b0;
+    font-size: 3.5em;
+    margin-bottom: 10px;
+}
+
+.date {
+    color: #9c27b0;
+    font-weight: 300;
+    margin-bottom: 30px;
+}
+
+.letter {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.letter p {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+.heart {
+    color: #e91e63;
+}
+
+.signature {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2em;
+    text-align: right;
+    margin-top: 40px;
+    color: #9c27b0;
+}
+
+
+.envelope {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    font-size: 4em;
+    cursor: pointer;
+    color: #ff69b4;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.envelope:hover {
+    transform: scale(1.5);
+}
+
+main {
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .letter {
+        padding: 25px;
+    }
+
+    h1 {
+        font-size: 2.5em;
+    }
+}
