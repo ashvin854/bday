@@ -7,16 +7,17 @@
     <title>Videos</title>
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="gallery.css">
 </head>
 
 <body>
     <header>
-        <img src="/photos/IMG-20240110-WA0010.jpg" alt="">
+        <img src="../photos/IMG-20240110-WA0010.jpg" alt="">
         <nav>
             <ul>
-                <li><a href="photos.html" target="_blank">Photos</a></li>
-                <li><a href="videos.html" target="_blank">Videos</a></li>
-                <li><a href="main.html" target="_blank">Main</a></li>
+                <li><a href="photos.html">Photos</a></li>
+                <li><a href="videos.html">Videos</a></li>
+                <li><a href="main.html">Main</a></li>
             </ul>
         </nav>
     </header>
@@ -72,6 +73,39 @@
     <div class="envelope" onclick="window.location.href='../index.html'">
         💌
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mediaElements = document.querySelectorAll('img, video');
+            
+            const lazyLoad = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const media = entry.target;
+                        if (media.tagName === 'IMG' && !media.src) {
+                            media.src = media.dataset.src;
+                        }
+                        media.classList.add('loaded');
+                        observer.unobserve(media);
+                    }
+                });
+            };
+
+            const observer = new IntersectionObserver(lazyLoad, {
+                root: null,
+                threshold: 0.1,
+                rootMargin: '0px 0px 50px 0px'
+            });
+
+            mediaElements.forEach(media => {
+                if (media.tagName === 'IMG' && !media.src) {
+                    media.dataset.src = media.getAttribute('src');
+                    media.removeAttribute('src');
+                }
+                observer.observe(media);
+            });
+        });
+    </script>
     
     <script>
         // Add a nice fade-in effect when page loads

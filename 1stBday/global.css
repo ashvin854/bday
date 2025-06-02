@@ -1,0 +1,32 @@
+/* Global Styles */
+/* Ensure all images are visible by default */
+img {
+    display: block !important;
+    max-width: 100%;
+    height: auto;
+    margin: 20px auto;
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Specific styles for images in content */
+p img, article img, .content img {
+    max-width: 80%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border: 2px solid #fff;
+}
+
+/* GIF specific styles */
+img[src*=".gif"] {
+    max-width: 300px;
+    border: none;
+    background: transparent;
+}
+
+/* Debug styles - add to body to see image boundaries */
+.debug-images img {
+    border: 2px dashed red !important;
+}

@@ -7,11 +7,13 @@
     <title>Happy Birthday</title>
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="gallery.css">
+    <link rel="stylesheet" href="global.css">
 </head>
 
 <body>
     <header>
-        <img src="/photos/IMG-20240110-WA0010.jpg" alt="">
+        <img src="../photos/IMG-20240110-WA0010.jpg" alt="" >
         <nav>
             <ul>
                 <li><a href="photos.html">Photos</a></li>
@@ -99,7 +101,7 @@
         </p>
         <p>next phase pe chlte hai ab.. hm college aa gye phr college aane ke kuch din baad se hm dono ne call pe
             baatein start kar dii.. aur aise vaise call nhii.. no no no </p>
-        <img src="/videos/qoobee-no-no-nonono.gif" alt="">
+        <img src="../videos/qoobee-no-no-nonono.gif" alt="">
         <p>hamari baatein hours hours hone lagi pta ni kyu call pe rehna accha sa lgne lga tha.. hmne isse bataya ki hm
             attached ho chuke hai badi jldi ho gya tha.. phr bhi hm ladte rahe aapse hehe.. apni overthinking karte
             rahe.. aur is vjh se kayi baar cheeze kharab hoti thi haha par thik hai kyuki hamare paass hai na tu jo har
@@ -170,6 +172,14 @@
         💌
     </div>
     
+    <script>
+        // Add a nice fade-in effect when page loads
+        document.body.style.opacity = '0';
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.style.transition = 'opacity 1s';
+            document.body.style.opacity = '1';
+        });
+    </script>
     <script>
         // Add a nice fade-in effect when page loads
         document.body.style.opacity = '0';

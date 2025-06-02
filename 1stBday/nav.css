@@ -1,5 +1,6 @@
+/* Navigation Bar */
 header {
-    background-color: rgba(255, 255, 255, 0.95);
+    background: linear-gradient(135deg, rgba(255, 154, 158, 0.95) 0%, rgba(250, 208, 196, 0.95) 100%);
     position: fixed;
     top: 0;
     left: 0;
@@ -7,42 +8,167 @@ header {
     height: 80px;
     display: flex;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    padding: 0 5%;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, box-shadow, background;
 }
 
+/* Header scroll effect */
+header.scrolled {
+    height: 70px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 154, 158, 0.9);
+}
+
+/* Logo/Image */
 header img {
-    height: 60px;
-    margin-left: 20px;
-    margin-right: 20px;
+    height: 55px;
+    width: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, box-shadow;
+    display: block !important;
+    position: relative !important;
+    z-index: 1001 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
 }
 
+header img:hover {
+    transform: scale(1.08) rotate(8deg);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    border-color: #fff;
+}
+
+/* Navigation Container */
 header nav {
     display: flex;
     align-items: center;
     margin-left: auto;
+    padding-right: 10px;
 }
 
+/* Navigation List */
 header ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 30px;
+    gap: 20px;
 }
 
+/* Navigation Items */
 header li {
     margin: 0;
+    position: relative;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeInDown 0.5s ease-out forwards;
 }
 
+/* Staggered animation for nav items */
+header li:nth-child(1) { animation-delay: 0.1s; }
+header li:nth-child(2) { animation-delay: 0.2s; }
+header li:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeInDown {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Navigation Links */
 header li a {
-    color: #333;
+    color: #5d2c3e;
     text-decoration: none;
-    font-size: 1.1em;
-    font-weight: 500;
-    transition: color 0.3s ease;
+    font-size: 1.05em;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 30px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    will-change: transform, background, color, box-shadow;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Link Hover Effect */
+header li a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+header li a:hover::before {
+    left: 100%;
 }
 
 header li a:hover {
-    color: #ff69b4;
+    color: #fff;
+    background: rgba(255, 107, 107, 0.9);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+}
+
+/* Active State */
+header li a:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 10px rgba(255, 107, 107, 0.2);
+    transition: transform 0.1s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header {
+        padding: 0 15px;
+        height: 70px;
+    }
+    
+    header img {
+        height: 45px;
+        width: 45px;
+    }
+    
+    header ul {
+        gap: 10px;
+    }
+    
+    header li a {
+        padding: 8px 14px;
+        font-size: 0.95em;
+    }
+}
+
+/* Add smooth transition for page load */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+body {
+    animation: fadeIn 0.8s ease-out;
 }
