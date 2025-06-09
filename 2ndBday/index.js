@@ -15,7 +15,7 @@ function initScratchCard() {
 
     // Set up initial canvas
     scratchContext.fillStyle = '#ff69b4';
-    scratchContext.fillRect(0, 0, canvas.width, canvas.height);
+    scratchContext.fillRect(0, 0, canvas.width, canvas.height)
 
     // Add event listeners for touch and mouse
     scratchArea.addEventListener('mousedown', startScratch);
