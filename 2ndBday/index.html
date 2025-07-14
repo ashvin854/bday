@@ -6,7 +6,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday Baa! ❤️</title>
     <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="index.css">
+    <style>
+        #response-container {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+        #voice-note {
+            width: 100%;
+            max-width: 300px;
+            margin: 10px auto;
+            display: none;
+        }
+        #no-message {
+            display: none;
+            color: #ff6b6b;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        #voice-note-input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+        .voice-note-container button {
+            padding: 8px 16px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .voice-note-container button:hover {
+            background-color: #ff5252;
+        }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Hand+Pre:wght@400..700&display=swap"
         rel="stylesheet">
     <script src="index.js"></script>
@@ -365,7 +405,6 @@
                     to
                     in action.'</article>
                 Bss apne karm kar rha.. </p>
-
                 <p>Kal April's fool hai.. last time kya kiya tha aapne aapko yaad hai? Buddhu bewkoof.. hm exam deke
                     nikle
                     the aur vo sb message dekhe and i was like shit.. turant aankhon mein aasnu the..ye kya hua abhi toh
@@ -682,13 +721,17 @@
                     words.. kyuki ho app kuch alg aur sblogo ko ye nhi smjh aayegaa.. kuch bhi ho hamesha aise hi reh...
                     jaisi hai vaisi reh.. jo accha lage vo karo aap..</p>
 
-                <p>abhi phr se hurt kiya hu..haha..sorry ba.. bolta hu mat kar messages manti nhi ho aap.. message aaya tha
-                aapka aaj (college mein dance ki thi uska status lagaya tha aapne).. karr rha wait toh karne de aapko
-                kya.. kaise samjhau har cheez kyu ni smjh rhi aap hme hota hai hurt jab hm wait kar rhe hote hai kya
-                karu ismein ab change toh ho nhi rha yee kitna try karu.. hm hai sensitive ismien kya glti hai hamari hm
-                kutte ya janwar ko dekh ke ro dete hai ab ismein kuch kar toh skta nahi.. sorry ba abhi bahut change
-                hona baaki hai i wish aapke college se nikalne se Pehle sb sahi kar lunga khudko.. aur pta hai ye bhi
-                janta hu ki tbtk itna late ho chuka hoga sb ki hme milegi hi nhi.. haha..</p>
+                <p>abhi phr se hurt kiya hu..haha..sorry ba.. bolta hu mat kar messages manti nhi ho aap.. message aaya
+                    tha
+                    aapka aaj (college mein dance ki thi uska status lagaya tha aapne).. karr rha wait toh karne de
+                    aapko
+                    kya.. kaise samjhau har cheez kyu ni smjh rhi aap hme hota hai hurt jab hm wait kar rhe hote hai kya
+                    karu ismein ab change toh ho nhi rha yee kitna try karu.. hm hai sensitive ismien kya glti hai
+                    hamari hm
+                    kutte ya janwar ko dekh ke ro dete hai ab ismein kuch kar toh skta nahi.. sorry ba abhi bahut change
+                    hona baaki hai i wish aapke college se nikalne se Pehle sb sahi kar lunga khudko.. aur pta hai ye
+                    bhi
+                    janta hu ki tbtk itna late ho chuka hoga sb ki hme milegi hi nhi.. haha..</p>
 
                 <!-- <p>agr aapko kabhi lga ke hm kyu itna sad hote hai toh aap bs ik baar pichle saal aapka bheja hua vo
                 birthday message padh lena aapko smjh aa jayega ki hamare jaise insaan ko kaha hurt ho rha hoga.. aapko
@@ -807,16 +850,31 @@
                     liee.. abse ni hoga aisa ye last tha agle baar se pakka.. dhyaan rakhunga har cheez ka..
                 </p>
                 <p>
-                    aree buddhu photo lagati hai toh hme toh hide kar diya kar na... hme screenshot lena pad jata hai aapka aur dance aap bhejti nhi huhh.. vo bhi bss status lga degi bss dekhte raho aree save karne ka mann karta hai hamara haiii.. bataya thaa naa hamari gallery aapke naam ho jati hai bss hidden rkhta hu sb.. 300+ hai hamare passs.. kuch delete ho gye hai 😔.. kyuki unhe add nhi kar paya tha.. 
+                    aree buddhu photo lagati hai toh hme toh hide kar diya kar na... hme screenshot lena pad jata hai
+                    aapka aur dance aap bhejti nhi huhh.. vo bhi bss status lga degi bss dekhte raho aree save karne ka
+                    mann karta hai hamara haiii.. bataya thaa naa hamari gallery aapke naam ho jati hai bss hidden rkhta
+                    hu sb.. 300+ hai hamare passs.. kuch delete ho gye hai 😔.. kyuki unhe add nhi kar paya tha..
                 </p>
-
                 <p>
                     ab kuch din bday hai aapkaaaa...happppyyyy birthhhdayyyy billliiiii... enjoyyy karrr khoob naach
                     hmesha khushhh rehhh hameshaa hastii rehhh..
                 </p>
-                <p>kya kehti hai ik voice note add kar du kyaa.. chll sochta hu mann hua toh kar dunga..vaise shakl toh nhi hai aapki..</p>
+                <p>kya kehti hai ik voice note ho jaaye.. bol agr chahiyea toh..</p>
+                <div class="voice-note-container">
+                    <div class="input-group">
+                        <input type="text" id="voice-note-input" placeholder="Type 'Yes' to hear my voice"> 
+                        <button onclick="handleVoiceNote()">Send</button>
+                    </div>
+                    <div id="response-container">
+                        <audio id="voice-note" src="voice-note.mp3" controls></audio>
+                        <p id="no-message">Chaloo koi nahi</p>
+                    </div>
+                </div>
 
-                <p>jayda hasna mat.. hme nhi likhnaa aata smjhi naa.. khud se likha tha phr buddhu chatgpt ne ittu sa rhyme karna ka try kiya hai bss baaki khud likha hu.. vaise bhi kuch bhi likh deta kaunsa aapko smjh aa rha (uttrakhand ke schools) ab kya hi kare.. chll na smjh aaye toh sharma nhi pooch lena thikkk baa.. hmse kya sharmana..</p>
+                <p>ik poem likh rha jayda hasna mat.. hme nhi likhnaa aata smjhi naa.. khud se likha tha phr chatgpt ne ittu sa
+                    rhyme karna ka try kiya (usse bhi nhi hua) bss baaki khud likha hu.. vaise bhi kuch bhi likh deta kaunsa aapko smjh
+                    aa rha (uttrakhand ke schools) ab kya hi kare.. chll na smjh nhi aaye toh sharma nhi pooch lena
+                    thikkk baa.. hmse kya sharmana..</p>
                 <div class="poem">
                     I've never met you,<br>
                     Yet i feel your breath <br>
@@ -864,6 +922,12 @@
                 document.body.style.transition = 'opacity 1s';
                 document.body.style.opacity = '1';
             });
+            // Add Enter key support for the input field
+            document.getElementById('voice-note-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleVoiceNote();
+                }
+            })
         </script>
 </body>
 

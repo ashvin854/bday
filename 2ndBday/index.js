@@ -1,4 +1,48 @@
-let isScratching = false;
+function showLetter() {
+    const greeting = document.querySelector('.greeting');
+    const envelope = document.querySelector('.envelope-container');
+    const letterContainer = document.querySelector('.letter-container');
+
+    if (greeting) greeting.classList.add('hidden');
+    if (envelope) envelope.classList.add('hidden');
+    if (letterContainer) letterContainer.classList.remove('hidden');
+}
+
+// Function to handle voice note display
+function handleVoiceNote() {
+    const input = document.getElementById('voice-note-input').value.toLowerCase().trim();
+    const responseContainer = document.getElementById('response-container');
+    const voiceNote = document.getElementById('voice-note');
+    const noMessage = document.getElementById('no-message');
+
+    // Define affirmative responses
+    const affirmativeResponses = ['yes', 'haan', 'ha', 'yup', 'yeah', 'ok', 'okay', 'sure', 'hm', 'hmm', 'vo', 'h'];
+
+    // Show the response container
+    responseContainer.style.display = 'block';
+    
+    // Check if input is affirmative
+    if (affirmativeResponses.includes(input)) {
+        voiceNote.style.display = 'block';
+        noMessage.style.display = 'none';
+        voiceNote.play().catch(e => console.log('Error playing audio:', e));
+    } else {
+        voiceNote.style.display = 'none';
+        noMessage.style.display = 'block';
+    }
+}
+
+// Add event listener for Enter key on input field
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('voice-note-input');
+    if (input) {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleVoiceNote();
+            }
+        });
+    }
+});
 let scratchContext = null;
 
 function initScratchCard() {
