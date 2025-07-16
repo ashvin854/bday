@@ -892,13 +892,90 @@
             </div>
         </div>
 
+        <div class="contact-form-container">
+            <h2>What should i change in me... cause i know there need to be some changes</h2>
+            <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="c2461516-6ef7-4953-9fd6-bf4db7df97d4">
+                <input type="hidden" name="subject" value="New Anonymous Message">
+                <input type="hidden" name="from_name" value="Anonymous User">
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                
+                <div class="form-group">
+                    <textarea id="message" name="message" rows="5" placeholder="Type your message here..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="h-captcha" data-captcha="true"></div>
+                </div>
+                <button type="submit" class="submit-btn">Send Anonymously</button>
+            </form>
+            <div id="form-status"></div>
+        </div>
+
         <script>
             // Add a nice fade-in effect when page loads
             document.body.style.opacity = '0';
             window.addEventListener('DOMContentLoaded', () => {
-                document.body.style.transition = 'opacity 1s';
-                document.body.style.opacity = '1';
+                setTimeout(() => {
+                    document.body.style.transition = 'opacity 1s';
+                    document.body.style.opacity = '1';
+                }, 100);
+
+                // Web3Forms Integration
+                const form = document.getElementById('contactForm');
+                const formStatus = document.getElementById('form-status');
+                const script = document.createElement('script');
+                script.src = 'https://web3forms.com/client/script.js';
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+
+                // Handle form submission
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    // Show loading state
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const btnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = 'Sending...';
+                    
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: new FormData(form)
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            formStatus.innerHTML = 'Message sent successfully! 🎉';
+                            formStatus.style.color = '#4CAF50';
+                            form.reset();
+                            
+                            // Reset hCaptcha if it exists
+                            if (window.hcaptcha) {
+                                const hcaptchaElements = document.querySelectorAll('[name="h-captcha-response"]');
+                                hcaptchaElements.forEach(el => el.value = '');
+                            }
+                        } else {
+                            throw new Error(result.message || 'Form submission failed');
+                        }
+                    } catch (error) {
+                        formStatus.innerHTML = error.message || 'Oops! There was a problem sending your message. Please try again.';
+                        formStatus.style.color = '#f44336';
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = btnText;
+                        formStatus.style.display = 'block';
+                        setTimeout(() => {
+                            formStatus.style.display = 'none';
+                        }, 5000);
+                    }
+                });
             });
+        </script>
+
+        <script>
             // Add Enter key support for the input field
             document.getElementById('voice-note-input').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
