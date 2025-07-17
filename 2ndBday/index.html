@@ -56,10 +56,76 @@
     <link href="https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Hand+Pre:wght@400..700&display=swap"
         rel="stylesheet">
     <script src="index.js"></script>
+    <script>
+        function checkDate() {
+            const targetDate = new Date('July 24, 2025 00:00:00').getTime();
+            const now = new Date().getTime();
+            const countdownElement = document.getElementById('countdown');
+            
+            // Show countdown initially
+            updateCountdown();
+            
+            // Update countdown every second
+            const countdownInterval = setInterval(updateCountdown, 1000);
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                
+                // If target date has arrived
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.innerHTML = "The message is now available! Refresh the page to view it.";
+                    // Show all content
+                    document.querySelectorAll('.hidden-content').forEach(el => {
+                        el.classList.remove('hidden-content');
+                    });
+                    return;
+                }
+                
+                // Calculate time units
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                // Display countdown
+                countdownElement.innerHTML = `Message will be available on July 24, 2025 at 12:00 AM<br>
+                                          ${days}d ${hours}h ${minutes}m ${seconds}s remaining`;
+                
+                // Initially hide all content
+                document.querySelectorAll('body > *:not(#countdown)').forEach(el => {
+                    if (el.id !== 'countdown') {
+                        el.classList.add('hidden-content');
+                    }
+                });
+            }
+        }
+    </script>
+    <style>
+        #countdown {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .hidden-content {
+            display: none;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="greeting">
+<body onload="checkDate()">
+    <div id="countdown"></div>
+    <div class="greeting hidden-content">
         <div class="scratch-card">
             <div class="scratch-area">
                 <div class="scratch-content">
@@ -80,10 +146,10 @@
             🎁 Open Letter
         </div>
     </div>
-    <div class="envelope" onclick="window.location.href='../index.html'">
+    <div class="envelope hidden-content" onclick="window.location.href='../index.html'">
         💌
     </div>
-    <div class="letter-container hidden">
+    <div class="letter-container hidden hidden-content">
         <div class="container">
             <header>
                 <h1>Happy Birthday Baa! <span class="heart">❤️</span></h1>
