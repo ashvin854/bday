@@ -93,12 +93,19 @@
 
     <script>
         // Target date for the message reveal (July 24, 2025, 00:00:00 IST)
-        const targetTime = 1739923200000; // This timestamp is for July 24, 2025, 00:00:00 GMT+05:30 (IST)
+        // Create date object for July 24, 2025, 00:00:00 in local time
+        const targetDate = new Date('2025-07-24T00:00:00+05:30');
+        const targetTime = targetDate.getTime(); // Get timestamp in milliseconds
         
         // Simple countdown function
         function updateCountdownTimer() {
             const now = new Date().getTime();
-            const distance = targetTime - now;
+            let distance = targetTime - now;
+            
+            // If time has passed, set distance to 0
+            if (distance < 0) {
+                distance = 0;
+            }
             
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -110,10 +117,15 @@
                 countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
             }
             
-            if (distance < 0) {
+            if (distance <= 0) {
                 clearInterval(countdownInterval);
                 if (countdownElement) {
                     countdownElement.textContent = 'Happy Birthday!';
+                    // Show the content when countdown reaches zero
+                    const contentPlaceholder = document.querySelector('.content-placeholder');
+                    if (contentPlaceholder) {
+                        contentPlaceholder.classList.add('show');
+                    }
                 }
             }
         }

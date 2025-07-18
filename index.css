@@ -22,8 +22,12 @@ body {
 
 .container {
   height: 100vh;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-top: 20px; /* Add some top margin */
 }
 
 .envelope-wrapper {
@@ -35,6 +39,8 @@ body {
   width: 400px;
   height: 300px;
   margin: 0 auto;
+  transform: translateY(0);
+  transition: all 0.5s ease-in-out;
 }
 
 .envelope {
@@ -106,6 +112,16 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+}
+
+.content-placeholder.show {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  opacity: 1;
+  padding-top: 60px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .heart {
@@ -186,10 +202,13 @@ body {
 }
 
 .flap .letter {
-  bottom: 200px; /* Adjusted for larger flap (180px) */
-  transform: scale(1.5);
+  bottom: 100%;
+  transform: scale(1.2) translateY(-20px);
   opacity: 1;
-  transition-delay: 1s;
+  transition-delay: 0.5s;
+  z-index: 10;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .flap .heart {
