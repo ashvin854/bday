@@ -5,7 +5,7 @@
     { "src": "api/check-access.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/check-access", "dest": "/api/check-access" },
+    { "src": "/api/check-access", "dest": "/api/check-access", "methods": ["GET", "OPTIONS"] },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
