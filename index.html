@@ -119,6 +119,7 @@
             
             // Target date: July 24, 2025 00:00:00 IST (1739923200000)
             const targetTime = 1739923200000;
+            let countdownInterval;
             
             // Hide loading
             loadingElement.style.display = 'none';
@@ -132,9 +133,10 @@
                 
                 if (distance <= 0) {
                     // Time's up! Show content
+                    clearInterval(countdownInterval);
                     countdownElement.style.display = 'none';
                     container.classList.remove('hidden-content');
-                    return false;
+                    return;
                 }
                 
                 // Calculate time units
@@ -147,16 +149,19 @@
                 if (countdownTimer) {
                     countdownTimer.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
                 }
-                
-                return true;
             }
             
             // Initial update
-            const shouldContinue = updateCountdown();
+            updateCountdown();
             
-            // Only set interval if we need to continue counting
-            if (shouldContinue) {
-                setInterval(updateCountdown, 1000);
+            // Start the countdown interval
+            countdownInterval = setInterval(updateCountdown, 1000);
+            
+            // Initial check for if time has already passed
+            if (new Date().getTime() >= targetTime) {
+                clearInterval(countdownInterval);
+                countdownElement.style.display = 'none';
+                container.classList.remove('hidden-content');
             }
         });
         
