@@ -55,6 +55,16 @@
             font-size: 1.5em;
             z-index: 2000;
         }
+        /* New style for the content container, initially hidden by default */
+        .content-placeholder {
+            display: none; /* Initially hidden */
+            opacity: 0; /* For fade in effect */
+            transition: opacity 1s ease-in-out;
+        }
+        .content-placeholder.show {
+            display: block;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -64,150 +74,117 @@
         <div id="countdown-timer">Calculating...</div>
         <p>July 24, 2025 at 12:00 AM IST</p>
     </div>
-    <div class="container hidden-content">
-        <div class="envelope-wrapper"> <!-- Start with open envelope (no flap class) -->
+    <div class="container content-placeholder"> <div class="envelope-wrapper">
             <div class="envelope">
                 <div class="letter">
-                    <div class="text">
-                        <strong>Happy Birthday baaa❤️💕</strong>
-                        <p>
-                            I wish this year brings you a lot of happiness, joy and lots of good memories. There is more when you click those links hehe.. toh idhar itna hi likhta hu baaki udhar padh lena meri buddhu.
-                        </p>
-                        <ul class="links">
-                            <li><a href="1stBday/index.html" target="_self">1st Birthday</a></li>
-                            <li><a href="2ndBday/index.html" target="_self">2nd Birthday</a></li>
-                        </ul>
-                        <style>
-                            .links {
-                                list-style: none;
-                                padding: 0;
-                                margin: 20px 0;
-                                display: flex;
-                                justify-content: center;
-                                gap: 20px;
-                            }
-                            .links li a {
-                                display: inline-block;
-                                padding: 10px 20px;
-                                background: #ff6b6b;
-                                color: white;
-                                text-decoration: none;
-                                border-radius: 30px;
-                                transition: all 0.3s ease;
-                                font-weight: bold;
-                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                            }
-                            .links li a:hover {
-                                background: #ff8e8e;
-                                transform: translateY(-2px);
-                                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-                            }
-                        </style>
-                    </div>
+                    <div id="birthday-message-content" class="text">
+                        </div>
                 </div>
             </div>
             <div class="heart"></div>
         </div>
     </div>
     <script>
-        // Simple countdown implementation
+        const targetTime = 1739923200000; // July 24, 2025 00:00:00 IST
+
         document.addEventListener('DOMContentLoaded', function() {
             const loadingElement = document.getElementById('loading');
             const countdownElement = document.getElementById('countdown');
             const countdownTimer = document.getElementById('countdown-timer');
-            const container = document.querySelector('.container');
-            
-            // Target date: July 24, 2025 00:00:00 IST (1739923200000)
-            const targetTime = 1739923200000;
-            let countdownInterval;
-            
-            // Hide loading
-            loadingElement.style.display = 'none';
-            
-            // Show countdown by default
-            countdownElement.style.display = 'block';
-            
+            const contentPlaceholder = document.querySelector('.content-placeholder'); // Select the new placeholder
+            const birthdayMessageContent = document.getElementById('birthday-message-content');
+
+            loadingElement.style.display = 'none'; // Hide loading once JS starts
+
+            function showContent() {
+                countdownElement.style.display = 'none';
+                contentPlaceholder.classList.add('show'); // Add 'show' class to fade in
+                setupEnvelope(); // Setup envelope interaction
+            }
+
+            async function fetchAndDisplayMessage() {
+                try {
+                    const response = await fetch('/api/message'); // Call your Vercel serverless function
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        birthdayMessageContent.innerHTML = data.message;
+                        showContent();
+                    } else {
+                        // If content is not yet available from server, show countdown
+                        console.log('Server says content is not yet available:', data.message);
+                        countdownElement.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error fetching message:', error);
+                    // Fallback to showing countdown if API call fails
+                    countdownElement.style.display = 'block';
+                    countdownTimer.textContent = 'Error loading message. Please try again later.';
+                }
+            }
+
             function updateCountdown() {
                 const now = new Date().getTime();
                 const distance = targetTime - now;
                 
                 if (distance <= 0) {
-                    // Time's up! Show content
-                    clearInterval(countdownInterval);
-                    countdownElement.style.display = 'none';
-                    container.classList.remove('hidden-content');
-                    return;
+                    clearInterval(countdownInterval); // Stop the countdown
+                    fetchAndDisplayMessage(); // Fetch the message
+                    return false;
                 }
                 
-                // Calculate time units
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                 
-                // Update the countdown display
                 if (countdownTimer) {
                     countdownTimer.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
                 }
+                
+                return true;
             }
             
-            // Initial update
-            updateCountdown();
-            
-            // Start the countdown interval
-            countdownInterval = setInterval(updateCountdown, 1000);
-            
-            // Initial check for if time has already passed
-            if (new Date().getTime() >= targetTime) {
-                clearInterval(countdownInterval);
-                countdownElement.style.display = 'none';
-                container.classList.remove('hidden-content');
+            let countdownInterval;
+
+            // Initial check and start countdown or display content
+            const shouldContinueCountdown = updateCountdown();
+            if (shouldContinueCountdown) {
+                countdownInterval = setInterval(updateCountdown, 1000);
+            } else {
+                // If already past the time, directly fetch the message
+                fetchAndDisplayMessage();
             }
-        });
-        
-        // Envelope click handler
-        function setupEnvelope() {
-            const envelope = document.querySelector('.envelope-wrapper');
-            if (!envelope) return;
-            
-            let isOpen = false;
-            
-            envelope.addEventListener('click', function() {
-                const letter = this.querySelector('.letter');
-                const heart = this.querySelector('.heart');
+
+            // Envelope click handler - only set up if content is displayed
+            function setupEnvelope() {
+                const envelope = document.querySelector('.envelope-wrapper');
+                if (!envelope) return;
                 
-                if (isOpen) {
-                    // Close the envelope
-                    this.classList.remove('flap');
-                    letter.style.transform = 'translateY(0)';
-                    letter.style.opacity = '0';
-                    heart.style.transform = 'translate(-50%, -50%) scale(0.2)';
-                    heart.style.opacity = '0';
-                } else {
-                    // Open the envelope
-                    this.classList.add('flap');
-                    letter.style.transform = 'translateY(-60px)';
-                    letter.style.opacity = '1';
-                    heart.style.transform = 'translate(-50%, -50%) scale(0)';
-                    heart.style.opacity = '0';
-                }
+                let isOpen = false;
                 
-                isOpen = !isOpen;
-            });
-            
-            // Show the envelope after content is loaded
-            document.querySelector('.envelope-wrapper').style.opacity = '1';
-        }
-        
-        // Run the check when the page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                checkAccess();
-                setupEnvelope();
-                document.getElementById('loading').style.display = 'none';
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loading').textContent = 'An error occurred. Please refresh the page.';
+                envelope.addEventListener('click', function() {
+                    const letter = this.querySelector('.letter');
+                    const heart = this.querySelector('.heart');
+                    
+                    if (isOpen) {
+                        this.classList.remove('flap');
+                        letter.style.transform = 'translateY(0)';
+                        letter.style.opacity = '0';
+                        heart.style.transform = 'translate(-50%, -50%) scale(0.2)';
+                        heart.style.opacity = '0';
+                    } else {
+                        this.classList.add('flap');
+                        letter.style.transform = 'translateY(-60px)';
+                        letter.style.opacity = '1';
+                        heart.style.transform = 'translate(-50%, -50%) scale(0)';
+                        heart.style.opacity = '0';
+                    }
+                    
+                    isOpen = !isOpen;
+                });
+                
+                document.querySelector('.envelope-wrapper').style.opacity = '1';
             }
         });
     </script>
