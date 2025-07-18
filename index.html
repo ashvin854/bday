@@ -66,13 +66,6 @@
             display: block; /* Make it block to take space */
             opacity: 1; /* Fade it in */
         }
-
-        /* Styles for the links inside the letter - KEPT IN JS FOR SERVER-SIDE DELIVERY */
-        /*
-        .links { ... }
-        .links li a { ... }
-        .links li a:hover { ... }
-        */
     </style>
 </head>
 <body>
@@ -102,32 +95,8 @@
         // Target date for the message reveal (July 24, 2025, 00:00:00 IST)
         const targetTime = 1739923200000; // This timestamp is for July 24, 2025, 00:00:00 GMT+05:30 (IST)
         
-        // Simple countdown function
-        function updateCountdownTimer() {
-            const now = new Date().getTime();
-            const distance = targetTime - now;
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            const countdownElement = document.getElementById('countdown-timer');
-            if (countdownElement) {
-                countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            }
-            
-            if (distance < 0) {
-                clearInterval(countdownInterval);
-                if (countdownElement) {
-                    countdownElement.textContent = 'Happy Birthday!';
-                }
-            }
-        }
-        
-        // Start the countdown
-        const countdownInterval = setInterval(updateCountdownTimer, 1000);
-        updateCountdownTimer(); // Initial call
+        // Declare countdownInterval in a scope accessible by updateCountdown and DOMContentLoaded
+        let countdownInterval; 
 
         document.addEventListener('DOMContentLoaded', function() {
             const loadingElement = document.getElementById('loading');
@@ -138,8 +107,6 @@
 
             // Hide loading overlay as soon as the DOM is ready and JS starts
             loadingElement.style.display = 'none'; 
-
-            let countdownInterval; // Variable to hold the interval ID
 
             // Function to display the fetched content and set up the envelope interaction
             function showContent() {
@@ -165,21 +132,21 @@
                         // Server denied access (e.g., time not met on server side)
                         console.warn('Server denied access or returned error:', data.message);
                         countdownElement.style.display = 'block'; // Ensure countdown is visible
+                        // Display server's denial message or a generic "not yet available"
                         countdownTimer.textContent = 'Message not yet available. ' + (data.message || 'Please wait.');
-                        // If server returns an error, we should NOT set up envelope as there's no message
-                        contentPlaceholder.style.display = 'none'; 
+                        contentPlaceholder.style.display = 'none'; // Ensure content is hidden
                     }
                 } catch (error) {
                     // Network error, server not responding, etc.
                     console.error('Error fetching message:', error);
                     countdownElement.style.display = 'block'; // Ensure countdown is visible
-                    countdownTimer.textContent = 'Happy Birthday baaa!';
-                    // If an error occurs, we should NOT set up envelope
-                    contentPlaceholder.style.display = 'none';
+                    // Display a helpful error message to the user
+                    countdownTimer.textContent = 'An error occurred. Please refresh or try again later.';
+                    contentPlaceholder.style.display = 'none'; // Ensure content is hidden
                 }
             }
 
-            // Function to update the client-side countdown timer
+            // Function to update the client-side countdown timer and manage access
             function updateCountdown() {
                 const now = new Date().getTime(); // Current client-side time
                 const distance = targetTime - now; // Time left
@@ -187,7 +154,7 @@
                 // If target time is reached or passed on the client side
                 if (distance <= 0) {
                     clearInterval(countdownInterval); // Stop the client-side timer
-                    countdownTimer.textContent = "Ready!"; // Show a 'ready' message briefly
+                    countdownTimer.textContent = "Ready! Accessing message..."; // Show a 'ready' message
                     fetchAndDisplayMessage(); // Now, try to fetch the actual message from the server
                     return false; // Indicate that countdown doesn't need to continue
                 }
