@@ -1,7 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api" }
-  ],
+  "version": 2,
   "builds": [
     { "src": "api/message.js", "use": "@vercel/node" },
     { "src": "index.html", "use": "@vercel/static" },
@@ -14,7 +12,15 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/message.js"
+      "dest": "/api/message.js"
+    },
+    {
+      "src": "/2ndBday/(?<path>.*)",
+      "dest": "/2ndBday/$path"
+    },
+    {
+      "src": "/1stBday/(?<path>.*)",
+      "dest": "/1stBday/$path"
     },
     {
       "src": "/(.*)",

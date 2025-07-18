@@ -95,10 +95,42 @@
         // Target date for the message reveal (July 24, 2025, 00:00:00 IST)
         const targetTime = 1739923200000; // This timestamp is for July 24, 2025, 00:00:00 GMT+05:30 (IST)
         
-        // Declare countdownInterval in a scope accessible by updateCountdown and DOMContentLoaded
-        let countdownInterval; 
-
+        // Simple countdown function
+        function updateCountdownTimer() {
+            const now = new Date().getTime();
+            const distance = targetTime - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            const countdownElement = document.getElementById('countdown-timer');
+            if (countdownElement) {
+                countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
+            
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                if (countdownElement) {
+                    countdownElement.textContent = 'Happy Birthday!';
+                }
+            }
+        }
+        
+        // Start the countdown when the page loads
         document.addEventListener('DOMContentLoaded', function() {
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            
+            // Show countdown
+            document.getElementById('countdown').style.display = 'flex';
+            
+            // Start the countdown
+            updateCountdownTimer(); // Initial call
+            const countdownInterval = setInterval(updateCountdownTimer, 1000);
+            
+            // Rest of your existing code
             const loadingElement = document.getElementById('loading');
             const countdownElement = document.getElementById('countdown');
             const countdownTimer = document.getElementById('countdown-timer');
