@@ -7,7 +7,7 @@
     <title>Happy Birthday Baa! ❤️</title>
     <link rel="stylesheet" href="index.css">
     <style>
-        /* Countdown Styles - KEPT */
+        /* Countdown Styles */
         #countdown {
             position: fixed;
             top: 0;
@@ -40,7 +40,7 @@
             color: #fff;
         }
 
-        /* Loading Overlay - KEPT */
+        /* Loading Overlay */
         #loading {
             position: fixed;
             top: 0;
@@ -56,15 +56,27 @@
             z-index: 2000;
         }
 
-        /* Content Placeholder Styles - KEPT AND MODIFIED FOR TRANSITION */
+        /* Content Placeholder Styles */
         .content-placeholder {
             display: none; /* Initially hidden by default */
             opacity: 0; /* For fade in effect */
             transition: opacity 1s ease-in-out; /* Smooth transition */
+            position: relative; /* Make it a positioning context */
+            z-index: 10; /* Ensure it's above other elements like envelope */
+            padding: 20px; /* Add padding for content */
+            box-sizing: border-box; /* Include padding in element's total width and height */
         }
         .content-placeholder.show {
             display: block; /* Make it block to take space */
             opacity: 1; /* Fade it in */
+        }
+
+        /* Envelope specific styles for layout */
+        .envelope-wrapper {
+            /* Keep existing positioning like fixed, top, left, transform-translate here */
+            /* Example: position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); */
+            z-index: 5; /* Lower than content-placeholder by default */
+            transition: all 0.5s ease-in-out; /* For smooth transitions applied by JS */
         }
     </style>
 </head>
@@ -93,69 +105,43 @@
 
     <script>
         // Target date for the message reveal (July 24, 2025, 00:00:00 IST)
-        // Create date object for July 24, 2025, 00:00:00 in local time
-        const targetDate = new Date('2025-07-24T00:00:00+05:30');
-        const targetTime = targetDate.getTime(); // Get timestamp in milliseconds
-        
-        // Simple countdown function
-        function updateCountdownTimer() {
-            const now = new Date().getTime();
-            let distance = targetTime - now;
-            
-            // If time has passed, set distance to 0
-            if (distance < 0) {
-                distance = 0;
-            }
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            const countdownElement = document.getElementById('countdown-timer');
-            if (countdownElement) {
-                countdownElement.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            }
-            
-            if (distance <= 0) {
-                clearInterval(countdownInterval);
-                if (countdownElement) {
-                    countdownElement.textContent = 'Happy Birthday!';
-                    // Show the content when countdown reaches zero
-                    const contentPlaceholder = document.querySelector('.content-placeholder');
-                    if (contentPlaceholder) {
-                        contentPlaceholder.classList.add('show');
-                    }
-                }
-            }
-        }
-        
-        // Start the countdown when the page loads
+        // Use the precise timestamp to avoid timezone parsing issues
+        const targetTime = 1721759400000; // July 24, 2025, 00:00:00 IST
+
+        let countdownInterval; // Declared once, to be assigned and cleared later
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Hide loading
-            document.getElementById('loading').style.display = 'none';
-            
-            // Show countdown
-            document.getElementById('countdown').style.display = 'flex';
-            
-            // Start the countdown
-            updateCountdownTimer(); // Initial call
-            const countdownInterval = setInterval(updateCountdownTimer, 1000);
-            
-            // Rest of your existing code
+            // Get all necessary DOM elements once
             const loadingElement = document.getElementById('loading');
             const countdownElement = document.getElementById('countdown');
             const countdownTimer = document.getElementById('countdown-timer');
             const contentPlaceholder = document.querySelector('.content-placeholder');
             const birthdayMessageContent = document.getElementById('birthday-message-content');
+            const envelopeWrapper = document.querySelector('.envelope-wrapper'); // Get envelope here too
 
-            // Hide loading overlay as soon as the DOM is ready and JS starts
+            // Hide loading overlay as soon as the DOM is ready
             loadingElement.style.display = 'none'; 
 
             // Function to display the fetched content and set up the envelope interaction
             function showContent() {
-                countdownElement.style.display = 'none'; // Hide the countdown
-                contentPlaceholder.classList.add('show'); // Make content visible with fade-in
+                clearInterval(countdownInterval); // Stop countdown once content is shown
+                countdownElement.style.display = 'none'; // Hide the countdown display
+
+                // Show content placeholder with fade-in
+                contentPlaceholder.classList.add('show'); 
+                
+                // Adjust envelope appearance
+                if (envelopeWrapper) {
+                    envelopeWrapper.style.position = 'fixed'; // Keep fixed if desired
+                    envelopeWrapper.style.bottom = '20px';    // Move to bottom right
+                    envelopeWrapper.style.right = '20px';
+                    envelopeWrapper.style.left = 'auto';      // Clear left positioning
+                    envelopeWrapper.style.top = 'auto';       // Clear top positioning
+                    envelopeWrapper.style.transform = 'scale(0.3)'; // Shrink it
+                    envelopeWrapper.style.opacity = '0.3';    // Make it transparent
+                    envelopeWrapper.style.zIndex = '1';       // Ensure it's behind main message (contentPlaceholder z-index 10)
+                }
+
                 setupEnvelope(); // Initialize envelope click handler
             }
 
@@ -163,30 +149,26 @@
             async function fetchAndDisplayMessage() {
                 console.log("Attempting to fetch message from server...");
                 try {
-                    // Call your Vercel serverless function
                     const response = await fetch('/api/message'); 
                     const data = await response.json();
 
                     if (response.ok && data.success) {
-                        // If server confirms success, inject the content
                         birthdayMessageContent.innerHTML = data.message;
-                        showContent(); // Show the content and hide countdown
+                        showContent(); // Server says YES, show content!
                         console.log("Message fetched and displayed successfully!");
                     } else {
-                        // Server denied access (e.g., time not met on server side)
+                        // Server denied access (e.g., time not met on server side) or general server error
                         console.warn('Server denied access or returned error:', data.message);
                         countdownElement.style.display = 'block'; // Ensure countdown is visible
-                        // Display server's denial message or a generic "not yet available"
                         countdownTimer.textContent = 'Message not yet available. ' + (data.message || 'Please wait.');
-                        contentPlaceholder.style.display = 'none'; // Ensure content is hidden
+                        contentPlaceholder.style.display = 'none'; // Ensure content remains hidden
                     }
                 } catch (error) {
                     // Network error, server not responding, etc.
                     console.error('Error fetching message:', error);
                     countdownElement.style.display = 'block'; // Ensure countdown is visible
-                    // Display a helpful error message to the user
                     countdownTimer.textContent = 'An error occurred. Please refresh or try again later.';
-                    contentPlaceholder.style.display = 'none'; // Ensure content is hidden
+                    contentPlaceholder.style.display = 'none'; // Ensure content remains hidden
                 }
             }
 
@@ -198,7 +180,7 @@
                 // If target time is reached or passed on the client side
                 if (distance <= 0) {
                     clearInterval(countdownInterval); // Stop the client-side timer
-                    countdownTimer.textContent = "Ready! Accessing message..."; // Show a 'ready' message
+                    countdownTimer.textContent = "Ready! Accessing message..."; // Show a 'ready' message briefly
                     fetchAndDisplayMessage(); // Now, try to fetch the actual message from the server
                     return false; // Indicate that countdown doesn't need to continue
                 }
@@ -210,9 +192,7 @@
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                 
                 // Update the countdown display
-                if (countdownTimer) {
-                    countdownTimer.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-                }
+                countdownTimer.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
                 
                 return true; // Indicate that countdown should continue
             }
@@ -231,8 +211,9 @@
                 fetchAndDisplayMessage();
             }
 
-            // Envelope click handler logic (remains the same as before)
+            // Envelope click handler logic
             function setupEnvelope() {
+                // Get the envelope wrapper again in case it was adjusted by showContent
                 const envelope = document.querySelector('.envelope-wrapper');
                 if (!envelope) {
                     console.warn("Envelope wrapper not found. Skipping setup.");
@@ -246,13 +227,17 @@
                     const heart = this.querySelector('.heart');
                     
                     if (isOpen) {
-                        this.classList.remove('flap');
+                        // When closing, revert to the smaller, transparent state
+                        envelope.style.transform = 'scale(0.3)'; 
+                        envelope.style.opacity = '0.3';
                         letter.style.transform = 'translateY(0)';
                         letter.style.opacity = '0';
                         heart.style.transform = 'translate(-50%, -50%) scale(0.2)';
                         heart.style.opacity = '0';
                     } else {
-                        this.classList.add('flap');
+                        // When opening, make it larger and fully opaque for interaction
+                        envelope.style.transform = 'scale(1)'; 
+                        envelope.style.opacity = '1';
                         letter.style.transform = 'translateY(-60px)';
                         letter.style.opacity = '1';
                         heart.style.transform = 'translate(-50%, -50%) scale(0)';
@@ -262,8 +247,8 @@
                     isOpen = !isOpen;
                 });
                 
-                // Make the envelope visible (it might be hidden by CSS initially for transition)
-                document.querySelector('.envelope-wrapper').style.opacity = '1';
+                // This line is no longer needed here if showContent() or initial CSS handles opacity
+                // document.querySelector('.envelope-wrapper').style.opacity = '1';
             }
         });
     </script>
