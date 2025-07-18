@@ -70,8 +70,25 @@
             
             try {
                 // Check with the Vercel API if access should be granted
-                const response = await fetch('/api/check-access');
+                console.log('Fetching access status from API...');
+                const response = await fetch('/api/check-access', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
+                console.log('API response:', JSON.stringify(data, null, 2));
+                
+                if (data.error) {
+                    throw new Error(data.message || 'Error from server');
+                }
                 
                 if (data.accessGranted) {
                     // Access granted - show all content
@@ -111,8 +128,13 @@
                 }
             } catch (error) {
                 console.error('Error checking access:', error);
-                countdownElement.textContent = 'Error checking access. Please try again later.';
+                const errorMessage = `Error: ${error.message || 'Unknown error occurred'}. Please check console for details.`;
+                console.error('Full error details:', error);
+                countdownElement.innerHTML = `Error: ${errorMessage}<br><small>Check browser console for more details</small>`;
                 countdownElement.style.color = 'red';
+                countdownElement.style.backgroundColor = '#ffebee';
+                countdownElement.style.padding = '15px';
+                countdownElement.style.borderRadius = '8px';
             } finally {
                 // Always hide loading screen
                 loadingElement.style.display = 'none';
