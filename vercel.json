@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "api/check-access.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/check-access", "dest": "/api/check-access" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
