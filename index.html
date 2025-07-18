@@ -7,6 +7,7 @@
     <title>Happy Birthday Baa! ❤️</title>
     <link rel="stylesheet" href="index.css">
     <style>
+        /* Countdown Styles - KEPT */
         #countdown {
             position: fixed;
             top: 0;
@@ -38,9 +39,8 @@
             margin: 10px 0;
             color: #fff;
         }
-        .hidden-content {
-            display: none;
-        }
+
+        /* Loading Overlay - KEPT */
         #loading {
             position: fixed;
             top: 0;
@@ -55,26 +55,37 @@
             font-size: 1.5em;
             z-index: 2000;
         }
-        /* New style for the content container, initially hidden by default */
+
+        /* Content Placeholder Styles - KEPT AND MODIFIED FOR TRANSITION */
         .content-placeholder {
-            display: none; /* Initially hidden */
+            display: none; /* Initially hidden by default */
             opacity: 0; /* For fade in effect */
-            transition: opacity 1s ease-in-out;
+            transition: opacity 1s ease-in-out; /* Smooth transition */
         }
         .content-placeholder.show {
-            display: block;
-            opacity: 1;
+            display: block; /* Make it block to take space */
+            opacity: 1; /* Fade it in */
         }
+
+        /* Styles for the links inside the letter - KEPT IN JS FOR SERVER-SIDE DELIVERY */
+        /*
+        .links { ... }
+        .links li a { ... }
+        .links li a:hover { ... }
+        */
     </style>
 </head>
 <body>
     <div id="loading">Loading...</div>
+    
     <div id="countdown">
         <p>This special message will be available on:</p>
         <div id="countdown-timer">Calculating...</div>
         <p>July 24, 2025 at 12:00 AM IST</p>
     </div>
-    <div class="container content-placeholder"> <div class="envelope-wrapper">
+    
+    <div class="container content-placeholder"> 
+        <div class="envelope-wrapper">
             <div class="envelope">
                 <div class="letter">
                     <div id="birthday-message-content" class="text">
@@ -84,82 +95,111 @@
             <div class="heart"></div>
         </div>
     </div>
+
+    <link rel="stylesheet" href="index.css"> 
+
     <script>
-        const targetTime = 1739923200000; // July 24, 2025 00:00:00 IST
+        // Target date for the message reveal (July 24, 2025, 00:00:00 IST)
+        const targetTime = 1739923200000; // This timestamp is for July 24, 2025, 00:00:00 GMT+05:30 (IST)
 
         document.addEventListener('DOMContentLoaded', function() {
             const loadingElement = document.getElementById('loading');
             const countdownElement = document.getElementById('countdown');
             const countdownTimer = document.getElementById('countdown-timer');
-            const contentPlaceholder = document.querySelector('.content-placeholder'); // Select the new placeholder
+            const contentPlaceholder = document.querySelector('.content-placeholder');
             const birthdayMessageContent = document.getElementById('birthday-message-content');
 
-            loadingElement.style.display = 'none'; // Hide loading once JS starts
+            // Hide loading overlay as soon as the DOM is ready and JS starts
+            loadingElement.style.display = 'none'; 
 
+            let countdownInterval; // Variable to hold the interval ID
+
+            // Function to display the fetched content and set up the envelope interaction
             function showContent() {
-                countdownElement.style.display = 'none';
-                contentPlaceholder.classList.add('show'); // Add 'show' class to fade in
-                setupEnvelope(); // Setup envelope interaction
+                countdownElement.style.display = 'none'; // Hide the countdown
+                contentPlaceholder.classList.add('show'); // Make content visible with fade-in
+                setupEnvelope(); // Initialize envelope click handler
             }
 
+            // Function to fetch the message from the serverless function
             async function fetchAndDisplayMessage() {
+                console.log("Attempting to fetch message from server...");
                 try {
-                    const response = await fetch('/api/message'); // Call your Vercel serverless function
+                    // Call your Vercel serverless function
+                    const response = await fetch('/api/message'); 
                     const data = await response.json();
 
                     if (response.ok && data.success) {
+                        // If server confirms success, inject the content
                         birthdayMessageContent.innerHTML = data.message;
-                        showContent();
+                        showContent(); // Show the content and hide countdown
+                        console.log("Message fetched and displayed successfully!");
                     } else {
-                        // If content is not yet available from server, show countdown
-                        console.log('Server says content is not yet available:', data.message);
-                        countdownElement.style.display = 'block';
+                        // Server denied access (e.g., time not met on server side)
+                        console.warn('Server denied access or returned error:', data.message);
+                        countdownElement.style.display = 'block'; // Ensure countdown is visible
+                        countdownTimer.textContent = 'Message not yet available. ' + (data.message || 'Please wait.');
+                        // If server returns an error, we should NOT set up envelope as there's no message
+                        contentPlaceholder.style.display = 'none'; 
                     }
                 } catch (error) {
+                    // Network error, server not responding, etc.
                     console.error('Error fetching message:', error);
-                    // Fallback to showing countdown if API call fails
-                    countdownElement.style.display = 'block';
-                    countdownTimer.textContent = 'Error loading message. Please try again later.';
+                    countdownElement.style.display = 'block'; // Ensure countdown is visible
+                    countdownTimer.textContent = 'Happy Birthday baaa!';
+                    // If an error occurs, we should NOT set up envelope
+                    contentPlaceholder.style.display = 'none';
                 }
             }
 
+            // Function to update the client-side countdown timer
             function updateCountdown() {
-                const now = new Date().getTime();
-                const distance = targetTime - now;
-                
+                const now = new Date().getTime(); // Current client-side time
+                const distance = targetTime - now; // Time left
+
+                // If target time is reached or passed on the client side
                 if (distance <= 0) {
-                    clearInterval(countdownInterval); // Stop the countdown
-                    fetchAndDisplayMessage(); // Fetch the message
-                    return false;
+                    clearInterval(countdownInterval); // Stop the client-side timer
+                    countdownTimer.textContent = "Ready!"; // Show a 'ready' message briefly
+                    fetchAndDisplayMessage(); // Now, try to fetch the actual message from the server
+                    return false; // Indicate that countdown doesn't need to continue
                 }
                 
+                // Calculate time units
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                 
+                // Update the countdown display
                 if (countdownTimer) {
                     countdownTimer.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
                 }
                 
-                return true;
+                return true; // Indicate that countdown should continue
             }
             
-            let countdownInterval;
-
-            // Initial check and start countdown or display content
+            // --- Initial Check and Setup ---
+            // Perform an initial countdown update
             const shouldContinueCountdown = updateCountdown();
+            
             if (shouldContinueCountdown) {
+                // If time is still remaining, start the interval to update countdown every second
                 countdownInterval = setInterval(updateCountdown, 1000);
+                countdownElement.style.display = 'block'; // Ensure countdown is visible
+                contentPlaceholder.style.display = 'none'; // Ensure content is hidden
             } else {
-                // If already past the time, directly fetch the message
+                // If the target time has already passed on client load, directly try to fetch message
                 fetchAndDisplayMessage();
             }
 
-            // Envelope click handler - only set up if content is displayed
+            // Envelope click handler logic (remains the same as before)
             function setupEnvelope() {
                 const envelope = document.querySelector('.envelope-wrapper');
-                if (!envelope) return;
+                if (!envelope) {
+                    console.warn("Envelope wrapper not found. Skipping setup.");
+                    return;
+                }
                 
                 let isOpen = false;
                 
@@ -184,6 +224,7 @@
                     isOpen = !isOpen;
                 });
                 
+                // Make the envelope visible (it might be hidden by CSS initially for transition)
                 document.querySelector('.envelope-wrapper').style.opacity = '1';
             }
         });

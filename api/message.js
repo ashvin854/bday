@@ -1,9 +1,13 @@
 // api/message.js
 module.exports = (req, res) => {
-    const targetDate = new Date('July 24, 2025 00:00:00 IST'); // Ensure IST conversion for the server
-    const now = new Date();
+    // IMPORTANT: Server-side check is the authoritative source for the date.
+    // Ensure the targetDate here is precisely the same as your client-side target.
+    // Using UTC or a specific timestamp is recommended to avoid server timezone issues.
+    // 1739923200000 is July 24, 2025, 00:00:00 IST (GMT+5:30)
+    const targetTimestamp = 1739923200000;
+    const nowTimestamp = new Date().getTime(); // Get current server time in milliseconds
 
-    if (now >= targetDate) {
+    if (nowTimestamp >= targetTimestamp) {
         res.status(200).json({
             success: true,
             message: `
@@ -17,6 +21,7 @@ module.exports = (req, res) => {
                     <li><a href="2ndBday/index.html" target="_self">2nd Birthday</a></li>
                 </ul>
                 <style>
+                    /* These styles are injected with the message, so they should be here */
                     .links {
                         list-style: none;
                         padding: 0;
@@ -47,7 +52,7 @@ module.exports = (req, res) => {
     } else {
         res.status(403).json({
             success: false,
-            message: "Content not yet available."
+            message: "Content not yet available based on server time."
         });
     }
 };
