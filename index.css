@@ -30,25 +30,40 @@ body {
   background: var(--bg-envelope-color);
   box-shadow: 0 0 40px var(--shadow-color);
   position: relative;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  width: 400px;
+  height: 300px;
+  margin: 0 auto;
 }
 
 .envelope {
   position: relative;
-  width: 400px; /* Increased from 300px */
-  height: 300px; /* Increased from 230px */
+  width: 100%;
+  height: 100%;
   cursor: pointer;
+  transition: all 0.5s ease-in-out;
 }
 
 .envelope::before {
   content: "";
   position: absolute;
   top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
   z-index: 2;
-  border-top: 180px solid var(--envelope-tab); /* Increased from 130px */
-  border-right: 200px solid transparent; /* Adjusted for new width (400px / 2) */
+  border-top: 180px solid var(--envelope-tab);
+  border-right: 200px solid transparent;
   border-left: 200px solid transparent;
   transform-origin: top;
-  transition: all 0.5s ease-in-out 0.7s;
+  transition: all 0.5s ease-in-out;
+  transform: rotateX(0deg);
+}
+
+.envelope-wrapper.flap .envelope::before {
+  transform: rotateX(180deg);
+  z-index: 0;
 }
 
 .envelope::after {
@@ -66,17 +81,19 @@ body {
 .letter {
   position: absolute;
   right: 15%;
-  bottom: -100  px; /* Adjusted for larger envelope */
-  width: 70%; /* 70% of 400px = 280px */
-  height: 90%; /* 90% of 300px = 270px */
+  bottom: 0;
+  width: 70%;
+  height: 90%;
   background: var(--primary);
   text-align: center;
-  transition: all 1s ease-in-out;
+  transition: all 0.6s ease-in-out;
   box-shadow: 0 0 5px var(--shadow-color);
   padding: 20px 15px;
   overflow: hidden;
   opacity: 0;
   z-index: 3;
+  transform: translateY(0);
+  border-radius: 5px;
 }
 
 .text {
