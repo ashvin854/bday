@@ -90,8 +90,8 @@
         </div>
     </div>
     <script>
-        // Obfuscated date check (July 24, 2025 00:00:00 IST in timestamp)
-        function checkAccess() {
+        // Simple countdown implementation
+        document.addEventListener('DOMContentLoaded', function() {
             const loadingElement = document.getElementById('loading');
             const countdownElement = document.getElementById('countdown');
             const countdownTimer = document.getElementById('countdown-timer');
@@ -99,45 +99,46 @@
             
             // Target date: July 24, 2025 00:00:00 IST (1739923200000)
             const targetTime = 1739923200000;
-            let countdownInterval;
             
-            // Hide loading after a short delay
-            setTimeout(() => {
-                loadingElement.style.display = 'none';
-            }, 500);
+            // Hide loading
+            loadingElement.style.display = 'none';
+            
+            // Show countdown by default
+            countdownElement.style.display = 'block';
             
             function updateCountdown() {
-                const now = new Date();
-                const distance = targetTime - now.getTime();
+                const now = new Date().getTime();
+                const distance = targetTime - now;
                 
                 if (distance <= 0) {
-                    clearInterval(countdownInterval);
+                    // Time's up! Show content
                     countdownElement.style.display = 'none';
                     container.classList.remove('hidden-content');
-                    return;
+                    return false;
                 }
                 
+                // Calculate time units
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                 
-                countdownTimer.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                // Update the countdown display
+                if (countdownTimer) {
+                    countdownTimer.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                }
+                
+                return true;
             }
             
-            // Initial check
-            const now = new Date();
-            if (now.getTime() >= targetTime) {
-                // Show content immediately if date has passed
-                countdownElement.style.display = 'none';
-                container.classList.remove('hidden-content');
-            } else {
-                // Show countdown and start updating
-                container.classList.add('hidden-content');
-                updateCountdown();
-                countdownInterval = setInterval(updateCountdown, 1000);
+            // Initial update
+            const shouldContinue = updateCountdown();
+            
+            // Only set interval if we need to continue counting
+            if (shouldContinue) {
+                setInterval(updateCountdown, 1000);
             }
-        }
+        });
         
         // Envelope click handler
         function setupEnvelope() {
