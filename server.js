@@ -13,6 +13,20 @@ app.get('/api/check-access', (req, res) => {
     res.json({ accessGranted: true });
 });
 
+// Add /api/message endpoint to serve the birthday message
+app.get('/api/message', (req, res) => {
+    // Here you can add logic to control when the message is available
+    // For example, you can check the current date/time and only allow access after a certain time
+
+    // For now, always return the message
+    const message = "Happy Birthday Baa! Wishing you lots of love and happiness on your special day! ❤️";
+
+    res.json({
+        success: true,
+        message: message
+    });
+});
+
 // Serve the main page
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
