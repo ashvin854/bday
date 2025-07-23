@@ -23,6 +23,14 @@
       "dest": "/1stBday/$path"
     },
     {
+      "src": "/photos/(?<path>.*)",
+      "dest": "/photos/$path"
+    },
+    {
+      "src": "/videos/(?<path>.*)",
+      "dest": "/videos/$path"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
